@@ -20,6 +20,7 @@ const useLogin = () => {
 
         // Save JWT token to localStorage
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('username', fldUsername);
 
         toast.success('Login Successful!');
 

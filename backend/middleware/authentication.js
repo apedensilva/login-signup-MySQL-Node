@@ -1,15 +1,16 @@
 const jwt = require('jsonwebtoken'); // Import JWT
 
-// JWT verification middleware
+// JWT verification middleware (for cookies)
 const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Authorization header
+    // Extract token from cookies
+    const token = req.cookies.token;
 
     if (!token) {
         return res.status(403).send({ message: 'Access denied. No token provided.' });
     }
 
     // Verify the token
-    jwt.verify(token, process.env.JWT_SECRET , (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
             return res.status(401).send({ message: 'Invalid token.' });
         }

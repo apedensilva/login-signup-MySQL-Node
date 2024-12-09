@@ -1,61 +1,57 @@
-// src/pages/dashboardPage.jsx
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../css/Dashboard.css';
+import { useNavigate } from 'react-router-dom'; 
 
 const Dashboard = () => {
+  const [username, setUsername] = useState('');
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
 
-  // Fetch user data after login using the stored token
   useEffect(() => {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      navigate('/'); // Redirect to login page if no token is found
-    } else {
-      fetch('http://localhost:5000/api/user', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setUserData(data); // Store user data in state
-        })
-        .catch((error) => {
-          console.error('Error fetching user data:', error);
-        });
+    // Fetch the username from localStorage
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      setUsername(storedUsername);
     }
-  }, [navigate]);
+  }, []);
 
+  const handleLogout = () => {
+    // Clear the username and token from localStorage
+    localStorage.removeItem('username');
+    localStorage.removeItem('token');
+    navigate('/');
+  };
+  
   return (
-    <div className="dashboard-container">
-      <h1>Welcome to Your Dashboard</h1>
-
-      {userData ? (
-        <div className="user-info">
-          <h2>User Info</h2>
-          <p><strong>Username:</strong> {userData.fldUsername}</p>
-          <p><strong>Email:</strong> {userData.fldUsername}</p>
-          <p><strong>Full Name:</strong> {userData.fldUsername}</p>
-          
-          <div className="dashboard-actions">
-            <button onClick={() => navigate('/profile')}>Go to Profile</button>
-            <button onClick={() => navigate('/settings')}>Go to Settings</button>
-            <button onClick={() => {
-              localStorage.removeItem('token');
-              navigate('/'); // Redirect to login page after logout
-            }}>
-              Logout
-            </button>
-          </div>
-        </div>
+    <div style={{ padding: '20px', backgroundColor: '#f4f6f9' }}>
+      <h1 style={{ textAlign: 'center' }}>Welcome to Your Dashboard</h1>
+      {username ? (
+        <h2 style={{ textAlign: 'center' }}>
+          Hello, {username}!
+        </h2>
       ) : (
-        <p>Loading user data...</p>
+        <h2 style={{ textAlign: 'center' }}>
+          Please log in to see your username.
+        </h2>
       )}
+        <button
+        onClick={handleLogout}
+        style={{
+          marginTop: '20px',
+          padding: '10px 20px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          fontSize: '16px'
+        }}
+      >
+        Logout
+      </button>
+
     </div>
+
+      
+    
   );
 };
 

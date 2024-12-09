@@ -1,12 +1,10 @@
-// server.js
 const express = require('express');
 const dotenv = require('dotenv');
-
-
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const { connectDB } = require('./database/dbconnection');
 const accountrouter = require('./routes/accountroutes');
-const loginrouter = require('./routes/loginroutes')
+const loginrouter = require('./routes/loginroutes');
 
 // Load environment variables
 dotenv.config();
@@ -15,20 +13,22 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
-
-//calling of database
+// Calling the database
 connectDB();
 
 // Middleware
 app.use(express.json());  // For parsing JSON request bodies
-app.use(cors());  // Enable CORS
+app.use(cookieParser());  // For parsing cookies
+app.use(cors({
+    origin: 'http://localhost:3000',  // Change to your frontend URL
+    credentials: true,  // Allow cookies to be sent
+}));
 
-app.use('/api',accountrouter)
-app.use('/auth',loginrouter)
+// Routes
+app.use('/api', accountrouter);  // Assuming your API routes are under /api
+app.use('/auth', loginrouter);  // Your login route
 
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-
