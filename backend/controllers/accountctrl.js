@@ -94,8 +94,46 @@ const getcurrentUSER = async(req,res)=>{
    }
 }
 
+const createPROFILE = async(req,res)=>{
+    const {fldFirstName,fldLastName,fldAge} = req.body;
+    const accountID = req.user.fldAccountID
+
+    // Validation for required profile fields
+  if (!fldFirstName || !fldLastName || !fldAge) {
+    return res.status(400).json({ message: 'Name, email, and age are required to create profile' });
+  }
+
+  try {
+    // Check if the profile already exists for the logged-in user
+    const [existingProfile] = await db.promise().query('SELECT * FROM accountdetails WHERE fldAccountID = ?', [accountID]);
+    if (existingProfile.length > 0) {
+      return res.status(400).json({ message: 'Profile already exists' });
+    }
+
+    // Insert the profile into the database
+    const [insertResult] = await db.promise().query(
+      'INSERT INTO accountdetails (fldAccountID,fldFirstName, fldLastName, fldAge) VALUES ( ?,?, ?, ?)',
+      [accountID,fldFirstName, fldLastName, fldAge]
+    );
+
+    const profile = { fldProfileID: insertResult.insertId, fldAccountID: accountID, fldFirstName, fldLastName, fldAge };
+
+    return res.status(201).json({
+      message: 'Profile created successfully',
+      profile
+    });
+
+  } catch (err) {
+    console.error('Error creating profile:', err);
+    return res.status(500).json({ message: 'Error creating profile', error: err.message });
+  }
+};
+
+
+
 module.exports = {
     createUSER,
     getallUSER,
-    getcurrentUSER
+    getcurrentUSER,
+    createPROFILE
 };

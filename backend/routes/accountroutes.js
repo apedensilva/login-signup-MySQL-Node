@@ -1,11 +1,12 @@
 const express = require('express')
 const router = express.Router();
 const {db} = require('../database/dbconnection')
-const {createUSER,getallUSER, getcurrentUSER} = require('../controllers/accountctrl');
+const {createUSER,getallUSER, getcurrentUSER, createPROFILE} = require('../controllers/accountctrl');
 const { verifyToken } = require('../middleware/authentication');
 
 //POST REQUEST
 router.post('/add_user',createUSER)
+router.post('/add_profile', verifyToken,createPROFILE)
 
 //GET REQUEST
 router.get('/get_all',getallUSER)
