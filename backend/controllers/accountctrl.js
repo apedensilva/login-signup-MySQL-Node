@@ -2,6 +2,9 @@ const bcrypt = require('bcryptjs'); // For password hashing
 const { db } = require('../database/dbconnection');
 const jwt = require('jsonwebtoken');
 const { verifyToken } = require('../middleware/authentication');
+const QRcode = require('qrcode')
+const path = require('path')
+const fs = require('fs')
 
 // POST controller
 const createUSER = async (req, res) => {
@@ -130,10 +133,68 @@ const createPROFILE = async(req,res)=>{
 };
 
 
+    // Get QR Code for the logged-in user
+const getQRCODE = async (req, res) => {
+    const accountID = req.user.fldAccountID;  // Get account ID from the JWT token
+
+    try {
+        // Fetch the user's username based on account ID
+        const [userResults] = await db.promise().query(
+            'SELECT fldFirstName FROM accountdetails WHERE fldAccountID = ?', [accountID]
+        );
+
+        if (userResults.length === 0) {
+            return res.status(404).send({
+                Status_code: 404,
+                Message: 'User Not Found'
+            });
+        }
+
+        const name = userResults[0].fldFirstName;
+        const qrData = `User: ${name}`;  // Data to be encoded into QR code
+
+        // Define the path where the QR code image will be stored
+        const qrCodePath = path.join(__dirname, '..', 'public', 'qrcodes', `user_${accountID}.png`);
+        const qrCodeURL = `/qrcodes/user_${accountID}.png`;
+
+        // Check if the QR code already exists
+        if (fs.existsSync(qrCodePath)) {
+            return res.status(200).send({
+                Status_code: 200,
+                Message: 'QR Code already generated',
+                QRCodeURL: qrCodeURL
+            });
+        }
+
+        // Generate and save the QR code as a PNG file
+        await QRcode.toFile(qrCodePath, qrData);
+
+        const updateSQL = 'UPDATE accountdetails SET fldQrUrl = ? WHERE fldAccountID = ?';
+        await db.promise().query(updateSQL, [qrCodeURL, accountID]);
+
+        return res.status(200).send({
+            Status_code: 200,
+            Message: 'QR Code generated successfully',
+            QRCodeURL: qrCodeURL  // URL where the QR code can be accessed
+        });
+    } catch (err) {
+        console.error('Error generating QR code:', err);
+        return res.status(500).send({
+            Status_code: 500,
+            Message: 'Error generating QR code',
+            Error: err.message
+        });
+    }
+};
+
+
+
+
 
 module.exports = {
     createUSER,
     getallUSER,
     getcurrentUSER,
-    createPROFILE
+    createPROFILE,
+    getQRCODE
 };

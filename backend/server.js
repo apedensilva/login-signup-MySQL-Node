@@ -5,6 +5,7 @@ const cors = require('cors');
 const { connectDB } = require('./database/dbconnection');
 const accountrouter = require('./routes/accountroutes');
 const loginrouter = require('./routes/loginroutes');
+const path = require('path'); // Add this line
 
 // Load environment variables
 dotenv.config();
@@ -23,10 +24,13 @@ app.use(cors({
     origin: 'http://localhost:3000',  // Change to your frontend URL
     credentials: true,  // Allow cookies to be sent
 }));
+app.use('/qrcodes',express.static(path.join(__dirname,'public','qrcodes')))
+
 
 // Routes
 app.use('/api', accountrouter);  // Assuming your API routes are under /api
 app.use('/auth', loginrouter);  // Your login route
+
 
 // Start the server
 app.listen(PORT, () => {
