@@ -5,6 +5,7 @@ const cors = require('cors');
 const { connectDB } = require('./database/dbconnection');
 const accountrouter = require('./routes/accountroutes');
 const loginrouter = require('./routes/loginroutes');
+const planrouter = require('./routes/planroutes')
 const path = require('path'); // Add this line
 
 // Load environment variables
@@ -30,7 +31,7 @@ app.use('/qrcodes',express.static(path.join(__dirname,'public','qrcodes')))
 // Routes
 app.use('/api', accountrouter);  // Assuming your API routes are under /api
 app.use('/auth', loginrouter);  // Your login route
-
+app.use('/api', planrouter)
 
 // Start the server
 app.listen(PORT, () => {

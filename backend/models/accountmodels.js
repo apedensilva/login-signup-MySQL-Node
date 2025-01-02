@@ -10,7 +10,7 @@ const User = {
       }
 
       // Check if any user was found
-      if (results.length === 0) {
+      if (results.length === 0) { 
         return callback(null, null); // No user found
       }
 
