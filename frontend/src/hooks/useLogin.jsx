@@ -14,7 +14,7 @@ const useLogin = () => {
 
     // Send login request to the backend
     axios
-      .post('http://localhost:5000/auth/login', { fldUsername, fldPassword })
+      .post('http://192.168.1.29:5000/auth/login', { fldUsername, fldPassword })
       .then((response) => {
         console.log('Login successful:', response);
 

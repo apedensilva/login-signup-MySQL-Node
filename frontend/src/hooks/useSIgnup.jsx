@@ -23,7 +23,7 @@ const useSignup = () => {
 
     // Send signup request to node backend
     axios
-      .post('http://localhost:5000/api/add_user', { fldUsername, fldPassword })
+      .post('http://192.168.1.29:5000/api/add_user', { fldUsername, fldPassword })
       .then((response) => {
         console.log('Signup successful: ', response);
         
