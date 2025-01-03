@@ -74,18 +74,29 @@ const getallUSER = async (req,res)=>{
 }
 
 const getcurrentUSER = async(req,res)=>{
-    const sql = 'SELECT fldUsername FROM accounts WHERE fldUsername = ?'
-
-    const username = req.user.fldUsername;
+    console.log('Account ID from token:', req.user.fldAccountID);
+    const sql = 'SELECT accountdetails.* FROM accounts JOIN accountdetails ON accounts.fldAccountID = accountdetails.fldAccountID WHERE accounts.fldAccountID = ?'
+    //get current user from account table to accountdetails table
+    const accountID = req.user.fldAccountID;
 
    try{
-    const[results] = await db.promise().query(sql,[username]);
+    const[results] = await db.promise().query(sql,[accountID]);
     if(results.length === 0 ){
         return res.status(404).send({
             Status_code:404,
             Message:'User not found'
         })
     }
+
+    console.log('First name fetched from database:', results[0].fldFirstName);
+    console.log('Last name fetched from database:', results[0].fldLastName);
+
+    return res.status(200).send({
+        Status_code: 200,
+        Message: 'User found',
+        FirstName: results[0].fldFirstName,
+        LastName: results[0].fldLastName
+    });
    }
    catch(err){
     console.error('Error fetching data', err)
