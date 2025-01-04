@@ -122,7 +122,7 @@ const createPROFILE = async(req,res)=>{
     const [existingProfile] = await db.promise().query('SELECT * FROM accountdetails WHERE fldAccountID = ?', [accountID]);
     if (existingProfile.length > 0) {
       return res.status(400).json({ message: 'Profile already exists' });
-    }
+    } // statement for checking existing profile
 
     // Insert the profile into the database
     const [insertResult] = await db.promise().query(
@@ -199,6 +199,30 @@ const getQRCODE = async (req, res) => {
 };
 
 
+const updateprofile = async (req,res) => {
+    const accountID = req.user.fldAccountID
+    const { fldFirstName, fldLastName, fldAge } = req.body;
+
+    try {
+        const[existingProfile] = await db.promise().query(
+            'SELECT * FROM accountdetails WHERE fldAccountID = ?',[accountID]
+        )
+
+        if (existingProfile.length === 0) {
+            return res.status(400).json({ message: 'Profile does not exist' });
+          } // statement for checking existing profile
+
+        const [updateresult] = await db.promise().query('UPDATE accountdetails SET fldFirstName = ?, fldLastName = ?, fldAge = ? WHERE fldAccountID = ?',[fldFirstName, fldLastName, fldAge, accountID])
+        return res.status(200).json({
+            message: 'Profile updated successfully',
+            check: updateresult
+          });
+    } catch (error) {
+        console.error('Update profile failed due to: ', error)
+    }
+}
+
+
 
 
 
@@ -207,5 +231,6 @@ module.exports = {
     getallUSER,
     getcurrentUSER,
     createPROFILE,
-    getQRCODE
+    getQRCODE,
+    updateprofile
 };
