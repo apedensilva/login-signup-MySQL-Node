@@ -7,7 +7,9 @@ const accountrouter = require('./routes/accountroutes');
 const loginrouter = require('./routes/loginroutes');
 const planrouter = require('./routes/planroutes')
 const path = require('path'); // Add this line
-const allowedOrigins = ['http://localhost:3000', 'http://192.168.1.29:3000','http://192.168.1.23:3000'];
+const corsoptions = require('./config/corsOptions')
+const credentials = require('./middleware/credentials')
+
 
 // Load environment variables
 dotenv.config();
@@ -22,16 +24,11 @@ connectDB();
 // Middleware
 app.use(express.json());  // For parsing JSON request bodies
 app.use(cookieParser());  // For parsing cookies
-app.use(cors({
-  origin: function (origin, callback) {
-      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-          callback(null, true);
-      } else {
-          callback(new Error('Not allowed by CORS'));
-      }
-  },
-  credentials: true,  // Allow cookies to be sent
-}));
+app.use(credentials);
+
+//CORS
+app.use(cors(corsoptions));
+
 app.use('/qrcodes',express.static(path.join(__dirname,'public','qrcodes')))
 
 
