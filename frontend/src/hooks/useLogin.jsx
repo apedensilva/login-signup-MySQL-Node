@@ -20,10 +20,10 @@ const useLogin = () => {
 
         // Save JWT token to localStorage
         localStorage.setItem('token', response.data.token);
-        console.log('Token has been sent to the local storage: ',response.data.token)
+        //console.log('Token has been sent to the local storage: ',response.data.token)
 
         localStorage.setItem('username', fldUsername);
-        console.log('Username has been sent to the local storage: ',fldUsername)
+        //console.log('Username has been sent to the local storage: ',fldUsername)
 
         toast.success('Login Successful!');
 
