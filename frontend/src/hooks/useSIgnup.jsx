@@ -20,6 +20,11 @@ const useSignup = () => {
       setErrorMessage("Passwords don't match");
       return;
     }
+    
+    if (fldPassword.length < 8) {
+      setErrorMessage("Password should be at least 8 characters long");
+      return;
+    }
 
     // Send signup request to node backend
     axios

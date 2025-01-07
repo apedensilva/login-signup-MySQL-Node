@@ -67,6 +67,10 @@ const fetchUserLastName = async (token) =>{
     localStorage.removeItem('token');
     navigate('/');
   };
+
+  const handleUpdateProfile = () => {
+    navigate('/updatepage');
+  }
   
 
   return (
@@ -79,12 +83,29 @@ const fetchUserLastName = async (token) =>{
         <h3 style={{ textAlign: 'center' }}>
         {firstName ? `Your first name: ${firstName} and your last name: ${lastName}` : 'No first name available'}
       </h3>
+      
       </div>
       ) : (
         <h2 style={{ textAlign: 'center' }}>
           Please log in to see your username.
         </h2>
       )}
+      <button
+        onClick={handleUpdateProfile}
+        style={{
+          marginTop: '20px',
+          padding: '10px 20px',
+          backgroundColor: '#28a745',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          fontSize: '16px',
+        }}
+      >
+        Update Profile
+      </button>
+      <br></br>
         <button
         onClick={handleLogout}
         style={{

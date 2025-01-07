@@ -17,6 +17,13 @@ const createUSER = async (req, res) => {
             Message: 'Username and password are required'
         });
     }
+    if (fldPassword.length < 8) {
+        console.log("Password should be 8 characters above")
+        return res.status(400).send({
+            Status_code: 400,
+            Message: 'Password Should be 8 characters above' ,
+        });
+      }
 
     // Check if the username already exists in the DB
     const checksql = 'SELECT * FROM accounts WHERE fldUsername = ?';

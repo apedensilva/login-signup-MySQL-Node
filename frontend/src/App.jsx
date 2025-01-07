@@ -5,6 +5,7 @@ import Signup from './pages/signPage';
 import { ToastContainer } from 'react-toastify'; 
 import './App.css'; // Import global CSS for the app if you have one
 import Dashboard from './pages/dashboardPage';
+import UpdateProfile from './pages/updatepage';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
 
         <Route path='/dashboard' element={<Dashboard/>}/>
 
+        <Route path='/updatepage' element={<UpdateProfile/>}/>
       </Routes>
       
     </Router>
